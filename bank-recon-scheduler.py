@@ -1,21 +1,27 @@
 import pyodbc
 import pandas as pd
+import os
+
+# Make directory to be able to work on different PC
+DIR_PATH_LOGS = os.path.expanduser("~/Desktop/cali-helper-functions/logs.txt")
+DIR_PATH = os.path.dirname(DIR_PATH_LOGS)
 
 
-class Extractor:
+# create directory if doesn't exist
+if not os.path.exists(DIR_PATH):
+    os.makedirs(DIR_PATH)
+
+class Extractor: # E302 expected 2 blank lines, found 1
     def init(self) -> None:
         return None
-    
     def write_msg(self, msg: str) -> None:
-        file_path = "C:/Users/aos/Desktop/cali-helper-functions/logs.txt"
+        file_path = DIR_PATH
         with open(file_path, "a+") as f:
             f.writelines(msg + "\n")
-
     def run(
-        self, path_string: str, file_name: str, company: str, save_directory: str
+        self, path_string: str, file_name: str, company: str, save_directory: str # E501 line too long (81 > 79 characters)
     ) -> None:
         print(path_string, file_name, company, save_directory)
-        
         self.write_msg("directory checking..")
         self.directory_path = path_string
         self.file_name = file_name
@@ -46,7 +52,7 @@ class Extractor:
         self.write_msg("executing query for TRM..")
         self.TRM = pd.read_sql(sql="select * from TRM;", con=self.conn)
         self.write_msg("saving pickle of TRM..")
-        self.TRM.to_pickle((f"{save_directory}/{company}/TRM.pkl"))
+        self.TRM.to_pickle(())
         self.write_msg("done making pickle of TRM..")
         self.write_msg("executing query for TRN..")
         self.TRN = pd.read_sql(sql="select * from TRN; ", con=self.conn)
@@ -58,13 +64,12 @@ class Extractor:
 if __name__ == "__main__":
     fe = Extractor()
     fe.write_msg("START OF SCRIPT")
-    save_directory = "T:\\bank_recon"  # set this to the NAS where the save files will be at you decide where to store
+    save_directory = "T:\\bank_recon"
     company_list = {
         "WFC": ("T:\\WESTBROOK\\Database\\", "FCUCV.mdb"),
         "BDC": ("T:\\Database\\FCU\\", "FCUCV.MDB"),
         "GMC": ("T:\\MAHOGANY\\Database\\", "FCUCV.mdb"),
     }
-    
     for key, value in company_list.items():
         fe.run(value[0], value[1], key, save_directory)
         fe.write_msg("END OF SCRIPT")
