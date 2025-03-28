@@ -1,0 +1,16 @@
+{
+    "DATABASE": {
+        "HOST": "172.16.5.13",
+        "USER": "root",
+        "PASSWORD": "bdc@001",
+        "DATABASE": "gwasdb"
+    },
+    "DATA": {
+        "TABLES": ["CVChecks","CVEntries","CVHeader","ORHeader","OREntries","JVEntries","JVHeader"],
+        "COLS_TO_EXTRACT": ["trndate","trnno","subacct","other_01","other_03","dr_amt","cr_amt","net","from","to","ref_1","ref_2"]
+    },
+    "DIRECTORY": {
+        "SAVE_DIRECTORY": "data",
+        "COMPANY": "GWAS"
+    }
+}
