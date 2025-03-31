@@ -4,20 +4,24 @@ import mariadb
 import pandas as pd
 import pickle
 from datetime import datetime
+from dotenv import load_dotenv
+
+DIR_BANK_RECON = "T:/bank_recon/GW/GW.pkl"
 
 
 class Extractor:
     def __init__(self):
+        load_dotenv()
+
         with open("config.json", "r") as f:
             config = json.load(f)
 
-        self.host = config["DATABASE"]["HOST"]
-        self.user = config["DATABASE"]["USER"]
-        self.password = config["DATABASE"]["PASSWORD"]
-        self.database = config["DATABASE"]["DATABASE"]
+        self.host = os.getenv("DATABASE_HOST")
+        self.user = os.getenv("DATABASE_USER")
+        self.password = os.getenv("DATABASE_PASSWORD")
+        self.database = os.getenv("DATABASE_NAME")
         self.tables = config["DATA"]["TABLES"]
         self.cols_to_extract = config["DATA"]["COLS_TO_EXTRACT"]
-        self.cols_to_extract2 = config["DATA"]["COLS_TO_EXTRACT"]
         self.save_directory = os.path.join(
             os.getcwd(), config["DIRECTORY"]["SAVE_DIRECTORY"]
         )
@@ -29,6 +33,18 @@ class Extractor:
             host=self.host,
             database=self.database,
         )
+
+    def _connect_db(self):
+        try:
+            self.db_conn = mariadb.connect(
+                user=self.user,
+                password=self.password,
+                host=self.host,
+                database=self.database,
+            )
+        except mariadb.Error as e:
+            print(f"Error connecting to database: {e}")
+            exit(1)
 
     def extract_data(self, table):
         sql_data = pd.read_sql(sql=f"select * from {table};", con=self.db_conn)
@@ -50,7 +66,10 @@ class Extractor:
         CVEntries.rename(columns=str.lower, inplace=True)
         CVHeader.rename(columns=str.lower, inplace=True)
 
-        merged_df1 = CVChecks.merge(CVEntries, on=["trndate", "trnno"], how="left")
+        merged_df1 = CVChecks.merge(CVEntries,
+                                    on=["trndate", "trnno"],
+                                    how="left"
+                                    )
         final_merged_df = merged_df1.merge(
             CVHeader, on=["trndate", "trnno"], how="left"
         )
@@ -90,9 +109,9 @@ class Extractor:
         cv_df["ref_1"] = ""
         cv_df["ref_2"] = ""
         cv_df["checkdate"] = cv_df["checkdate"]
-        colsextract = self.cols_to_extract2
-        colsextract.append("checkdate")
-        return cv_df[colsextract].copy()
+        cols_extract = self.cols_to_extract
+        cols_extract.append("checkdate")
+        return cv_df[cols_extract].copy()
 
     def format_or_data(self, or_df):
         or_df["other_01"] = or_df["receivedfrom"].fillna(or_df["name"])
@@ -104,8 +123,7 @@ class Extractor:
         or_df["to"] = ""
         or_df["ref_1"] = ""
         or_df["ref_2"] = ""
-        or_df = or_df[or_df['acctno'] == "1000"] 
-        
+        or_df = or_df[or_df['acctno'] == "1000"]
         self.cols_to_extract.remove('checkdate')
         return or_df[self.cols_to_extract].copy()
 
@@ -128,7 +146,11 @@ class Extractor:
         return df
 
     def to_csv(self, df, filename):
-        df.to_csv(f"{self.save_directory}/{self.company}/{filename}.csv", index=False)
+        df.to_csv(f"{self.save_directory}/"
+                  f"{self.company}/"
+                  f"{filename}.csv",
+                  index=False
+                  )
 
     def process(self, start_date, end_date):
         self.run_data()
@@ -147,7 +169,7 @@ class Extractor:
 
         formatted_df = pd.concat([df1, df2, df3], ignore_index=True)
         formatted_df = formatted_df.fillna(0)
-        formatted_df.to_pickle(("T:/bank_recon/GW/GW.pkl"))
+        formatted_df.to_pickle(DIR_BANK_RECON)
         # self.to_csv(formatted_df, "GWAS_data")
 
         return formatted_df
