@@ -143,4 +143,4 @@ The script requires the Microsoft Access ODBC driver to connect to `.mdb` and `.
    ```
 
 ### Example
-The script iterates through the `company_list` and extracts the data for each company, saving it as pickle files in:
+The script iterates through the `company_list` and extracts the data for each company, saving it as pickle files
