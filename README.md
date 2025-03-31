@@ -90,12 +90,6 @@ The script requires the following software and libraries:
   - `pyodbc`
   - `pandas`
   - `os`
-
-Install the required libraries using:
-```bash
-pip install pyodbc pandas
-```
-
 The script requires the Microsoft Access ODBC driver to connect to `.mdb` and `.accdb` files. Ensure the driver is installed on the machine.
 
 ---
