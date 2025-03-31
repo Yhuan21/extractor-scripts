@@ -4,22 +4,20 @@ import mariadb
 import pandas as pd
 import pickle
 from datetime import datetime
-from dotenv import load_dotenv
 
 DIR_BANK_RECON = "T:/bank_recon/GW/GW.pkl"
 
 
 class Extractor:
     def __init__(self):
-        load_dotenv()
 
         with open("config.json", "r") as f:
             config = json.load(f)
 
-        self.host = os.getenv("DATABASE_HOST")
-        self.user = os.getenv("DATABASE_USER")
-        self.password = os.getenv("DATABASE_PASSWORD")
-        self.database = os.getenv("DATABASE_NAME")
+        self.host = config["DATABASE"]["HOST"]
+        self.user = config["DATABASE"]["USER"]
+        self.password = config["DATABASE"]["PASSWORD"]
+        self.database = config["DATABASE"]["DATABASE"]
         self.tables = config["DATA"]["TABLES"]
         self.cols_to_extract = config["DATA"]["COLS_TO_EXTRACT"]
         self.save_directory = os.path.join(
