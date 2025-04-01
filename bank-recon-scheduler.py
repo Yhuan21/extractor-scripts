@@ -2,7 +2,6 @@ import pyodbc
 import pandas as pd
 import os
 
-ACCESS_DRIVER = r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ="
 
 DIR_PATH_LOGS = os.path.expanduser("~/Desktop/cali-helper-functions/logs.txt")
 DIR_PATH = os.path.dirname(DIR_PATH_LOGS)
@@ -46,14 +45,14 @@ class Extractor:
         self.file_name.replace("//", "/")
         self.write_msg("connecting to db..")
         print(
-            ACCESS_DRIVER
+            r"DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ="
             + self.directory_path
             + self.file_name
             + ";Trusted_Connection=yes;"
         )
 
         self.conn = pyodbc.connect(
-            ACCESS_DRIVER
+            "DRIVER={Microsoft Access Driver (*.mdb, *.accdb)};DBQ="
             + self.directory_path
             + self.file_name
             + ";Trusted_Connection=yes;"
