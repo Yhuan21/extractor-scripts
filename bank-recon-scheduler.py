@@ -20,6 +20,7 @@ class Extractor:
         with open(file_path, "a+") as f:
             f.writelines(msg + "\n")
 
+
     def run(
         self, path_string:
             str, file_name:
