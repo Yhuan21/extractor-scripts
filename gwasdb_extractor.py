@@ -5,7 +5,10 @@ import pandas as pd
 import pickle
 from datetime import datetime
 
-DIR_BANK_RECON = "T:/bank_recon/GW/GW.pkl"
+with open("config.json", "r") as f:
+    config = json.load(f)
+
+DIR_BANK_RECON = os.path.expanduser(config["DIRECTORY"]["BANK_RECON_PKL"])
 
 
 class Extractor:

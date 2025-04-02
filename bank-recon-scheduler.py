@@ -1,11 +1,14 @@
 import pyodbc
 import pandas as pd
 import os
+import json
 
+with open("config.json", "r") as f:
+    config = json.load(f)
 
-DIR_PATH_LOGS = os.path.expanduser("~/Desktop/cali-helper-functions/logs.txt")
+DIR_PATH_LOGS = os.path.expanduser(config["DIRECTORY"]["LOGS"])
 DIR_PATH = os.path.dirname(DIR_PATH_LOGS)
-DIR_BANK_RECON = "T:\\bank_recon"
+DIR_BANK_RECON = os.path.expanduser(config["DIRECTORY"]["BANK_RECON"])
 
 if not os.path.exists(DIR_PATH):
     os.makedirs(DIR_PATH)
