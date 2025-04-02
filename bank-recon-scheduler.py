@@ -10,9 +10,6 @@ DIR_PATH_LOGS = os.path.expanduser(config["DIRECTORY"]["LOGS"])
 DIR_PATH = os.path.dirname(DIR_PATH_LOGS)
 DIR_BANK_RECON = os.path.expanduser(config["DIRECTORY"]["BANK_RECON"])
 
-if not os.path.exists(DIR_PATH):
-    os.makedirs(DIR_PATH)
-
 
 class Extractor:
     def __init__(self) -> None:
